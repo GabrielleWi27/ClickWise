@@ -106,6 +106,21 @@ export function OrgProvider({ children }) {
     return data;
   };
 
+  // Permanently removes an employee — also goes through a server-side Edge
+  // Function, since deleting their real Auth account needs the service-role
+  // key. Their training/simulation history is deleted along with them
+  // (see remove-member's comment on the database's cascade behavior).
+  const removeMember = async (orgId, memberId) => {
+    const { data, error } = await supabase.functions.invoke('remove-member', {
+      body: { memberId, orgId },
+    });
+    if (error) {
+      const detail = await error.context?.json?.().catch(() => null);
+      throw new Error(detail?.error || error.message);
+    }
+    return data;
+  };
+
   // Assigns one content-library item to a company. We copy the item's
   // details in alongside the reference (not just a bare foreign key), so
   // this stays true to what was assigned even if the catalog item is
@@ -150,7 +165,7 @@ export function OrgProvider({ children }) {
   };
 
   return (
-    <OrgContext.Provider value={{ getOrgById, getAllOrgs, addMember, assignContent, changePlan, launchCampaign }}>
+    <OrgContext.Provider value={{ getOrgById, getAllOrgs, addMember, removeMember, assignContent, changePlan, launchCampaign }}>
       {children}
     </OrgContext.Provider>
   );

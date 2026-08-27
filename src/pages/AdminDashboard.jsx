@@ -35,11 +35,14 @@ function initials(name) {
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const { getOrgById } = useOrg();
+  const { getOrgById, removeMember } = useOrg();
   const [showAddMember, setShowAddMember] = useState(false); // toggles the Add Member popup
   const [showAddCampaign, setShowAddCampaign] = useState(false); // toggles the Add Campaign popup
   const [org, setOrg] = useState(null); // this admin's own company, fetched from Supabase
   const [intel, setIntel] = useState({ overallRiskScore: null, riskScoreByMember: {}, recentActivity: [], trainingCompletionRate: null });
+  const [confirmRemoveId, setConfirmRemoveId] = useState(null); // which member row is showing "Remove?" right now
+  const [removingId, setRemovingId] = useState(null); // which member is actively being deleted (disables the buttons)
+  const [removeError, setRemoveError] = useState('');
 
   // Re-fetches this company's data — called on first load, and again
   // after adding a member or launching a campaign so the page reflects it.
@@ -53,6 +56,23 @@ export default function AdminDashboard() {
   useEffect(() => {
     refreshOrg();
   }, [refreshOrg]);
+
+  // Actually deletes the member (only called after they've confirmed via
+  // the inline "Remove?" step below) — permanently erases their account
+  // and all their training/simulation history.
+  const handleRemoveMember = async (memberId) => {
+    setRemoveError('');
+    setRemovingId(memberId);
+    try {
+      await removeMember(user.orgId, memberId);
+      await refreshOrg();
+    } catch (err) {
+      setRemoveError(err.message);
+    } finally {
+      setRemovingId(null);
+      setConfirmRemoveId(null);
+    }
+  };
 
   const members = org?.members ?? [];
   const activeCampaigns = org?.activeCampaigns ?? [];
@@ -187,6 +207,11 @@ export default function AdminDashboard() {
                 </button>
               </div>
             </div>
+            {removeError && (
+              <div className="mx-8 mt-4 px-4 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl flex items-center gap-2">
+                <iconify-icon icon="material-symbols:error"></iconify-icon> {removeError}
+              </div>
+            )}
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -253,9 +278,37 @@ export default function AdminDashboard() {
                         {intel.riskScoreByMember[member.id] === undefined ? '—' : `${intel.riskScoreByMember[member.id]}/100`}
                       </td>
                       <td className="px-8 py-5 text-right">
-                        <button className="p-2 text-zinc-500 hover:text-white transition-colors">
-                          <iconify-icon icon="material-symbols:more-horiz"></iconify-icon>
-                        </button>
+                        {member.role === ROLES.ORG_ADMIN ? (
+                          // Org admins can't be removed from this screen — see remove-member's checks.
+                          <span className="text-zinc-700 text-xs">—</span>
+                        ) : confirmRemoveId === member.id ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <span className="text-xs text-zinc-400">Remove?</span>
+                            <button
+                              onClick={() => handleRemoveMember(member.id)}
+                              disabled={removingId === member.id}
+                              className="px-3 py-1.5 rounded-lg bg-[#ef233c] hover:bg-red-700 disabled:opacity-50 text-white text-xs font-bold transition-all"
+                            >
+                              {removingId === member.id ? 'Removing…' : 'Confirm'}
+                            </button>
+                            <button
+                              onClick={() => setConfirmRemoveId(null)}
+                              disabled={removingId === member.id}
+                              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 disabled:opacity-50 text-zinc-300 text-xs font-bold transition-all"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmRemoveId(member.id)}
+                            title="Remove member"
+                            aria-label="Remove member"
+                            className="p-2 text-zinc-500 hover:text-[#ef233c] transition-colors"
+                          >
+                            <iconify-icon icon="material-symbols:person-remove"></iconify-icon>
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
