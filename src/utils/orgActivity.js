@@ -4,6 +4,7 @@
 // Nothing here is hardcoded or guessed; an org with no activity yet just
 // gets `null`/empty results instead of a fake placeholder number.
 import { supabase } from '../lib/supabaseClient';
+import { fetchAllPages } from './fetchAll';
 
 // The main function this file exports — everything an org's dashboard
 // needs, computed fresh from the database every time it's called.
@@ -18,9 +19,16 @@ export async function fetchOrgIntelligence(orgId, { lessonCount = 0 } = {}) {
   const memberIds = (members ?? []).map((m) => m.id);
   if (memberIds.length === 0) return empty;
 
-  const [{ data: simRows }, { data: progressRows }] = await Promise.all([
-    supabase.from('sim_results').select('*, simulations(name)').in('user_id', memberIds),
-    supabase.from('training_progress').select('*, lessons(title)').in('user_id', memberIds),
+  // Paginated (see fetchAll.js) — a plain unranged .select() silently
+  // truncates at 1,000 rows, which a large organization like this one
+  // blows straight past.
+  const [simRows, progressRows] = await Promise.all([
+    fetchAllPages((from, to) =>
+      supabase.from('sim_results').select('*, simulations(name)').in('user_id', memberIds).range(from, to)
+    ),
+    fetchAllPages((from, to) =>
+      supabase.from('training_progress').select('*, lessons(title)').in('user_id', memberIds).range(from, to)
+    ),
   ]);
 
   // Quick lookup table: member id -> member name, used below when

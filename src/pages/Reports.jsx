@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import { fetchAllPages } from '../utils/fetchAll';
 
 // Turns a plain list of numbers into an SVG "path" string, so they can be
 // drawn as a connected line chart. Each number becomes one point; `M` means
@@ -43,7 +44,13 @@ export default function Reports() {
       .then(({ data: members }) => {
         const memberIds = (members ?? []).map((m) => m.id);
         return Promise.all([
-          memberIds.length ? supabase.from('sim_results').select('*').in('user_id', memberIds) : Promise.resolve({ data: [] }),
+          // Paginated (see fetchAll.js) — a plain unranged .select() silently
+          // truncates at 1,000 rows, which a large organization can blow past.
+          memberIds.length
+            ? fetchAllPages((from, to) => supabase.from('sim_results').select('*').in('user_id', memberIds).range(from, to)).then(
+                (data) => ({ data })
+              )
+            : Promise.resolve({ data: [] }),
           supabase.from('org_campaigns').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
           supabase.from('org_department_risk').select('*').eq('org_id', orgId),
           supabase.from('org_attack_vectors').select('*').eq('org_id', orgId).order('click_rate', { ascending: false }).limit(4),
