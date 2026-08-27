@@ -16,6 +16,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import CampaignResults from './pages/CampaignResults';
 import AdminDashboard from './pages/AdminDashboard';
+import OrgReport from './pages/OrgReport';
 import Reports from './pages/Reports';
 import Profile from './pages/Profile';
 import PlatformAdmin from './pages/PlatformAdmin';
@@ -50,6 +51,7 @@ export default function App() {
             <Route element={<ProtectedRoute roles={[ROLES.ORG_ADMIN]} />}>
               <Route path="/campaigns" element={<CampaignResults />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/report" element={<OrgReport />} />
               <Route path="/reports" element={<Reports />} />
             </Route>
 

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer className="bg-black pt-16 pb-10 relative overflow-hidden">
+    <footer className="bg-black pt-16 pb-10 relative overflow-hidden print:hidden">
       {/* the 4-column layout: logo+blurb (wide), then 2 link columns */}
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 relative z-10">
         <div className="md:col-span-2">

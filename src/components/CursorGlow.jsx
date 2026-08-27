@@ -28,7 +28,7 @@ export default function CursorGlow() {
   return (
     <div
       ref={glowRef}
-      className="fixed top-0 left-0 z-[1] pointer-events-none opacity-60 will-change-transform"
+      className="fixed top-0 left-0 z-[1] pointer-events-none opacity-60 will-change-transform print:hidden"
       style={{
         width: SIZE,
         height: SIZE,

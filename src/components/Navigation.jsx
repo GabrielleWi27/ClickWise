@@ -45,7 +45,7 @@ export default function Navigation() {
   const navLinks = getNavLinks(user?.role);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 pt-6 px-4">
+    <header className="fixed top-0 left-0 w-full z-50 pt-6 px-4 print:hidden">
       <nav className="max-w-6xl mx-auto flex items-center justify-between bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-2xl">
         {/* logo on the far left — always links back home */}
         <Link to="/" className="flex items-center gap-2">

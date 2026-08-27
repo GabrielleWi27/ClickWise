@@ -320,14 +320,18 @@ export default function AdminDashboard() {
               <div className="text-xs text-zinc-500">
                 Showing {members.length} of {seatLimit === Infinity ? 'unlimited' : seatLimit} members
               </div>
-              {/* decorative buttons — not wired up yet */}
               <div className="flex gap-3">
+                {/* decorative — no per-member training assignment feature exists yet */}
                 <button className="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white px-4 py-2 border border-white/10 rounded-xl transition-all">
                   Assign Training
                 </button>
-                <button className="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white px-4 py-2 border border-white/10 rounded-xl transition-all">
+                <Link
+                  to="/admin/report"
+                  className="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white px-4 py-2 border border-white/10 rounded-xl transition-all flex items-center gap-1.5"
+                >
+                  <iconify-icon icon="material-symbols:download"></iconify-icon>
                   Export Data
-                </button>
+                </Link>
               </div>
             </div>
           </div>

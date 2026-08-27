@@ -14,11 +14,13 @@ import ScrollToTop from './ScrollToTop';
 
 export default function Layout() {
   return (
-    <div className="min-h-screen bg-black text-white font-inter relative overflow-x-hidden flex flex-col">
+    <div className="min-h-screen bg-black text-white print:bg-white print:text-black font-inter relative overflow-x-hidden flex flex-col">
       <ScrollToTop /> {/* resets scroll to the top on every navigation */}
+      {/* print:hidden on all the site chrome below — nobody wants a dark
+          background, nav bar, or footer wasting ink on a printed report */}
       <GlobalBackground /> {/* the stars/glow behind everything */}
       <CursorGlow /> {/* soft red glow that follows the mouse */}
-      <div className="gradient-blur" /> {/* fades the background near the top edge */}
+      <div className="gradient-blur print:hidden" /> {/* fades the background near the top edge */}
       <Navigation /> {/* the top bar with logo, links, sign in/profile */}
       <PasswordChangeBanner /> {/* nudges anyone still on a default password to change it */}
       <OnboardingTour /> {/* first-login welcome popup, once per account */}

@@ -5,7 +5,7 @@
 // sits behind all real page content (`z-0`).
 export default function GlobalBackground() {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none">
+    <div className="fixed inset-0 z-0 pointer-events-none print:hidden">
       {/* the dark gradient base color */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#1a0505] to-black" />
       {/* two layers of tiny drifting "stars" (the actual dots come from index.css) */}
