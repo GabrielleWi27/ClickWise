@@ -1,0 +1,327 @@
+/* Global styles: Tailwind's utility classes (used directly in the JSX
+   throughout src/) plus every custom animation/class that Tailwind alone
+   can't express — imported once here and available everywhere. */
+@import "tailwindcss";
+
+/* Reusable color variables — not actually referenced elsewhere yet, but
+   handy for quickly re-theming the red accent color from one place. */
+:root {
+  --accent-red: #ef233c;
+  --accent-red-glow: rgba(239, 35, 60, 0.5);
+}
+
+html {
+  background-color: #000; /* avoids a white flash while the page first loads, before styles apply */
+}
+
+body {
+  margin: 0; /* removes the browser's default page margin */
+}
+
+/* Layout element used by the Superdesign design tool during development — harmless if unused at runtime */
+sd-component {
+  display: block;
+}
+
+/* Used by .animate-fade-up below: content starts slightly lower and
+   transparent, then eases up into place. */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Powers the rotating rainbow-style border on .shiny-cta buttons, by
+   spinning the custom --gradient-angle property (defined via @property below). */
+@keyframes border-spin {
+  from {
+    --gradient-angle: 0deg;
+  }
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* Used by .stars-1 / .stars-2 in GlobalBackground.jsx: slides the star
+   dots upward in a loop to create a slow drifting effect. */
+@keyframes animStar {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
+}
+
+/* Registers --gradient-angle as a real animatable angle value — without
+   this, browsers can't smoothly animate a custom CSS property. */
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* The fade-up-on-scroll/load effect used all over the app's pages. */
+.animate-fade-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+}
+
+/* The two brand fonts loaded in index.html, available as utility classes. */
+.font-manrope {
+  font-family: 'Manrope', sans-serif;
+}
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+/* The main red/black "Protect Now" style call-to-action button — a
+   spinning conic-gradient border plus a subtle dotted-noise overlay. */
+.shiny-cta {
+  --gradient-angle: 0deg;
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  padding: 1rem 2.5rem;
+  background:
+    linear-gradient(#000000, #000000) padding-box,
+    conic-gradient(
+        from var(--gradient-angle),
+        transparent 0%,
+        #ef233c 5%,
+        #ef233c 15%,
+        #ef233c 30%,
+        transparent 40%,
+        transparent 100%
+      )
+      border-box;
+  border: 2px solid transparent;
+  cursor: pointer;
+  isolation: isolate;
+  animation: border-spin 2.5s linear infinite;
+}
+
+.shiny-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, white 0.5px, transparent 0);
+  background-size: 4px 4px;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+/* Each "star" is just a plain CSS box-shadow dot at a fixed position —
+   two layers (different dot sizes/speeds via animStar above) fake a
+   simple parallax starfield with no images or canvas needed. */
+.stars-1 {
+  box-shadow:
+    234px 124px #fff,
+    654px 345px #fff,
+    876px 12px #fff,
+    1200px 800px #fff,
+    400px 1500px #fff,
+    1800px 200px #fff,
+    100px 1000px #fff,
+    900px 1900px #fff,
+    500px 600px #fff,
+    1400px 100px #fff,
+    300px 400px #fff,
+    1600px 1200px #fff;
+}
+.stars-2 {
+  box-shadow:
+    123px 456px #fff,
+    789px 234px #fff,
+    456px 890px #fff,
+    1100px 300px #fff,
+    200px 1200px #fff,
+    1500px 500px #fff,
+    600px 1700px #fff,
+    1300px 900px #fff;
+}
+
+/* The soft fade at the very top of the page (behind the nav bar) that
+   blurs/darkens whatever page content scrolls up underneath it. */
+.gradient-blur {
+  position: fixed;
+  z-index: 40;
+  inset: 0 0 auto 0;
+  height: 120px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+  backdrop-filter: blur(8px);
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+/* Makes text you drag-select turn red instead of the browser's default blue. */
+.selection-red::selection {
+  background: #ef233c;
+  color: white;
+}
+
+/* Outlined/hollow text — used for the giant faint "CLICKWISE" watermark
+   text (e.g. in Footer.jsx): a thin white outline with no fill color. */
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+  color: transparent;
+}
+
+/* The "frosted glass" card look used all over the app — a translucent
+   panel with a blurred background and a subtle border that turns red on hover. */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgba(239, 35, 60, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Same frosted-glass look as .glass-card, but without the hover effect —
+   used for panels that shouldn't look clickable (e.g. tooltips). */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar navigation link styling — highlights on hover, solid red when it's the active page. */
+.admin-sidebar-link {
+  transition: all 0.2s ease;
+}
+.admin-sidebar-link:hover {
+  background: rgba(239, 35, 60, 0.1);
+  color: #ef233c;
+}
+.admin-sidebar-link.active {
+  background: #ef233c;
+  color: white;
+}
+
+/* The standard dark, rounded text input style used across every form in the app. */
+.input-field {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  color: white;
+  transition: all 0.2s;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #ef233c;
+  box-shadow: 0 0 0 2px rgba(239, 35, 60, 0.2);
+}
+
+/* Phishing-intro animation (src/pages/PhishingIntro.jsx) */
+@keyframes cw-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.cw-bob {
+  animation: cw-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes cw-swim-in {
+  0% { transform: translateX(-140px) scaleX(-1); opacity: 0; }
+  15% { opacity: 1; }
+  70% { transform: translateX(0) scaleX(-1); opacity: 1; }
+  100% { transform: translateX(0) scaleX(-1); opacity: 1; }
+}
+.cw-swim-in {
+  animation: cw-swim-in 3.2s ease-in-out forwards;
+}
+
+@keyframes cw-bite {
+  0%, 60% { transform: scale(1); }
+  68% { transform: scale(1.35); }
+  76% { transform: scale(0.92); }
+  84% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.cw-bite {
+  animation: cw-bite 3.2s ease-in-out forwards;
+}
+
+@keyframes cw-ripple {
+  0% { transform: scale(0.6); opacity: 0.5; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.cw-ripple {
+  animation: cw-ripple 2.6s ease-out infinite;
+}
+
+@keyframes cw-cast {
+  0% { height: 0%; }
+  100% { height: 100%; }
+}
+.cw-cast {
+  animation: cw-cast 1.4s ease-out forwards;
+}
+
+@keyframes cw-scene-fill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+.cw-scene-fill {
+  animation: cw-scene-fill linear forwards;
+}
+
+@keyframes cw-count-bar {
+  from { width: 0%; }
+  to { width: var(--cw-target, 60%); }
+}
+.cw-count-bar {
+  animation: cw-count-bar 1.6s ease-out 0.3s forwards;
+  width: 0%;
+}
+
+/* A slightly different focus glow, used on the Sign In page's inputs. */
+.input-glow:focus {
+  box-shadow: 0 0 15px rgba(239, 35, 60, 0.2);
+  border-color: #ef233c !important;
+}
+
+/* Smooths out width/color changes on things like progress bars. */
+.step-transition {
+  transition: all 0.3s ease-in-out;
+}
+
+/* A slim, red-tinted scrollbar for specific scrollable panels (opt-in via this class). */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(239, 35, 60, 0.3);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 35, 60, 0.5);
+}
+
+/* The page's default scrollbar (not opt-in — applies everywhere), styled
+   to match the dark/red theme instead of the browser's default gray. */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: #ef233c33;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ef233c66;
+}

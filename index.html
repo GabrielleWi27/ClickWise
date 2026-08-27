@@ -1,0 +1,35 @@
+<!-- The one real HTML page in this app. Everything you actually see is
+     rendered into <div id="root"> below by React — this file just sets up
+     the page shell: fonts, the icon library, and the script that starts
+     the app. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- makes the page render at the device's real width instead of a zoomed-out "desktop" view -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CLICKWISE | Phishing Defense Platform</title>
+
+    <!-- Defines the <iconify-icon> custom element used everywhere in the
+         app (e.g. <iconify-icon icon="material-symbols:shield">). -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <!-- Google Fonts: Inter (body text) + Manrope (headings). The two
+         "preconnect" links open the connection early so the actual font
+         request below loads faster. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@200;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <!-- "selection-red" (see index.css) makes highlighted/selected text red instead of the browser default -->
+  <body class="selection-red">
+    <!-- React takes over this empty div and renders the entire app inside it -->
+    <div id="root"></div>
+    <!-- The actual JavaScript entry point — everything starts executing from here -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

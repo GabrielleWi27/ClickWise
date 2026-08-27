@@ -1,0 +1,34 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Supabase credentials — never commit real keys
+.env
+
+# Supabase CLI's local project-link state — auto-regenerated, not secret
+# but not meant to be version-controlled either
+supabase/.temp
+
+# Claude Code's personal/machine-specific settings — not shared project config
+.claude/settings.local.json
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
