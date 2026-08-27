@@ -80,11 +80,6 @@ export default function AdminDashboard() {
             <iconify-icon icon="material-symbols:bar-chart"></iconify-icon>
             View Reports
           </Link>
-          {/* decorative — no audit-generation feature exists yet */}
-          <button className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
-            <iconify-icon icon="material-symbols:description"></iconify-icon>
-            Generate Audit
-          </button>
           <button
             onClick={() => setShowAddMember(true)}
             className="px-5 py-2.5 bg-[#ef233c] hover:bg-red-700 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-[0_4px_15px_rgba(239,35,60,0.3)]"
