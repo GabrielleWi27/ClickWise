@@ -39,19 +39,34 @@ const DOMAIN = 'drairlogistics.co.ke';
 const ORG_NAME = 'Drair Logistics';
 const DEPARTMENTS = ['Engineering', 'Sales', 'Marketing', 'Finance', 'Legal', 'HR', 'Other'];
 
-const FIRST_NAMES = ['James', 'Mary', 'Peter', 'Faith', 'Brian', 'Linda', 'Kevin', 'Diana', 'Samuel', 'Esther', 'Victor', 'Joyce', 'Dennis', 'Irene'];
+// 100 unique first names (one spare beyond the 99 needed) — every employee
+// gets a first name nobody else in the roster has. Last names repeat
+// (cycled from the 14-name pool below), which is realistic and fine;
+// only first names need to be unique.
+const FIRST_NAMES = [
+  'James', 'Mary', 'Peter', 'Faith', 'Brian', 'Linda', 'Kevin', 'Diana', 'Samuel', 'Esther',
+  'Victor', 'Joyce', 'Dennis', 'Irene', 'Michael', 'Grace', 'Daniel', 'Alice', 'Joseph', 'Wanjiru',
+  'John', 'Catherine', 'Paul', 'Beatrice', 'Mark', 'Caroline', 'Anthony', 'Dorcas', 'Charles', 'Eunice',
+  'Edwin', 'Florence', 'Felix', 'Gladys', 'George', 'Hellen', 'Hassan', 'Immaculate', 'Ibrahim', 'Jacinta',
+  'Julius', 'Keziah', 'Kennedy', 'Lucy', 'Leonard', 'Margaret', 'Martin', 'Nancy', 'Nicholas', 'Olivia',
+  'Oscar', 'Patricia', 'Patrick', 'Rose', 'Quentin', 'Sylvia', 'Robert', 'Teresa', 'Stephen', 'Ursula',
+  'Timothy', 'Veronica', 'Vincent', 'Winnie', 'Walter', 'Yvonne', 'Xavier', 'Zipporah', 'Yusuf', 'Agnes',
+  'Zachary', 'Bridget', 'Erick', 'Cynthia', 'Fredrick', 'Daisy', 'Gilbert', 'Edith', 'Henry', 'Rachel',
+  'Isaac', 'Sarah', 'Jackson', 'Tabitha', 'Kelvin', 'Mercy', 'Lawrence', 'Naomi', 'Moses', 'Priscilla',
+  'Nathan', 'Rebecca', 'Oliver', 'Susan', 'Phillip', 'Vivian', 'Raphael', 'Wendy', 'Simon', 'Yolanda',
+];
 const LAST_NAMES = ['Mwangi', 'Achieng', 'Kariuki', 'Njoroge', 'Otieno', 'Wafula', 'Kimani', 'Adhiambo', 'Barasa', 'Chebet', 'Muriuki', 'Nekesa', 'Odhiambo', 'Wanjala'];
 
-// 99 unique (first, last) combinations out of 14x14=196 possible pairs.
+if (new Set(FIRST_NAMES).size !== FIRST_NAMES.length) {
+  throw new Error('FIRST_NAMES has a duplicate — every employee is supposed to get a unique first name.');
+}
+
+// 99 employees, each with a first name nobody else shares.
 function buildEmployeeRoster() {
-  const roster = [];
-  outer: for (const first of FIRST_NAMES) {
-    for (const last of LAST_NAMES) {
-      roster.push({ name: `${first} ${last}`, email: `${first.toLowerCase()}.${last.toLowerCase()}@${DOMAIN}` });
-      if (roster.length === 99) break outer;
-    }
-  }
-  return roster;
+  return FIRST_NAMES.slice(0, 99).map((first, i) => {
+    const last = LAST_NAMES[i % LAST_NAMES.length];
+    return { name: `${first} ${last}`, email: `${first.toLowerCase()}.${last.toLowerCase()}@${DOMAIN}` };
+  });
 }
 
 // A date `daysAgo` days in the past, as an ISO timestamp — used so
