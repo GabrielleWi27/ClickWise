@@ -54,6 +54,7 @@ export default function SignUp() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // toggles the password field between hidden dots and plain text
   const [emailError, setEmailError] = useState('');
   const [checkingDomain, setCheckingDomain] = useState(false);
   const [joiningOrg, setJoiningOrg] = useState(null); // { id, name } of the org this email's domain matches
@@ -215,14 +216,24 @@ export default function SignUp() {
                     <label htmlFor="password" className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">
                       Password
                     </label>
-                    <input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#ef233c] focus:ring-1 focus:ring-[#ef233c] transition-all"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 pr-14 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#ef233c] focus:ring-1 focus:ring-[#ef233c] transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        <iconify-icon icon={showPassword ? 'material-symbols:visibility-off' : 'material-symbols:visibility'}></iconify-icon>
+                      </button>
+                    </div>
                     <ul className="mt-3 space-y-1.5">
                       <li className={`text-xs flex items-center gap-1.5 ${checks.length ? 'text-emerald-400' : 'text-zinc-500'}`}>
                         <iconify-icon icon={checks.length ? 'material-symbols:check-circle' : 'material-symbols:radio-button-unchecked'}></iconify-icon>

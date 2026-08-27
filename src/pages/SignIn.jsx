@@ -12,6 +12,7 @@ export default function SignIn() {
   const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // toggles the password field between hidden dots and plain text
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -89,14 +90,24 @@ export default function SignIn() {
                   Forgot password?
                 </a>
               </div>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-zinc-600 focus:outline-none input-glow transition-all"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 pr-14 text-white placeholder-zinc-600 focus:outline-none input-glow transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <iconify-icon icon={showPassword ? 'material-symbols:visibility-off' : 'material-symbols:visibility'}></iconify-icon>
+                </button>
+              </div>
             </div>
 
             {/* decorative checkbox — not wired up to anything (no "remember me" logic exists) */}
